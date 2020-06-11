@@ -1,0 +1,115 @@
+import win32com.client
+o = win32com.client.Dispatch("Outlook.Application")
+oacctouse = None
+for oacc in o.Session.Accounts:
+  if oacc.SmtpAddress == "Maksim.Smirnov@unilever.com":
+    oacctouse = oacc
+    break
+
+#print oacc   
+#dir(oacc)
+#oacc.CLSID
+#oacc.GetAddressEntryFromID
+Msg = o.CreateItem(0)
+if oacctouse:
+   Msg._oleobj_.Invoke(*(64209, 0, 8, 0, oacctouse))  # Msg.SendUsingAccount = oacctouse
+Msg.To="Maksim.Smirnov@unilever.com"  
+Msg.Subject = "тест отправки сгенерированного письма"  
+Msg.HTMLBody =    '''<h3>"Это письмо сформировано автоматически, отвечать на него не нужно".</h3>
+
+
+
+<font color = "red"> 
+                        <h3>Проверка отправки писем.</h3>
+                        
+                       
+                        
+
+
+
+
+
+                   {}'''.format(df_transaction_info.to_html())                              #'<h2>Тестовое письмо</h2>'
+
+# To attach a file to the email (optional):
+attachment  = 'C:/Users/Maksim.Smirnov/hello.xlsx'
+Msg.Attachments.Add(attachment)
+#Msg.Attachments.Add('C:/Users/Maksim.Smirnov/graph_sample.jpg')
+#Msg.Display(False)
+
+Msg.Send()
+
+#<html><body> <IMG SRC="cid:C:/Users/Maksim.Smirnov/graph_sample.jpg" > </body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+###########################################
+# получение и обработка писем из Outlook
+
+
+import win32com.client
+
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+inbox = outlook.GetDefaultFolder(6) # "6" refers to the index of a folder - in this case,
+                                    # the inbox. You can change that number to reference
+                                    # any other folder
+messages = inbox.Items
+message = messages.GetLast()
+body_content = message.body
+subject = message.Subject
+print (body_content)
+print (subject)
+print (message.SenderEmailAddress)
+print (message.HTMLBody)
+# получить таблицу из письма
+html_table= pd.read_html(message.HTMLBody)[0]
+
+
+for message in messages:
+    print(message.Subject)
+    
+    
+from IPython.display import display_html 
+
+display_html(message.HTMLBody, raw=True)
+html_table= pd.read_html(message.HTMLBody)[0].iloc[3,1]
+
+
+
+
+
+    
+import win32com.client
+
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+inbox = outlook.GetDefaultFolder(6)
+messages = inbox.Items
+'''message = messages.GetLast()
+body_content = message.Body
+subject = message.Subject
+categories = message.Categories
+print(body_content)
+print(subject)
+print(categories)'''
+
+for message in messages:
+           print(message.SenderEmailAddress)
+    
+    
+for m in messages:
+   if 'ANNA VIKTOR' in m.SenderEmailAddress:
+       print(m.Subject)
+       
+for m in messages:
+    if m.SenderEmailAddress == 'Denis.Sadovoy@unilever.com':
+       print(m.Body)
